@@ -1,0 +1,18 @@
+AllCops:
+  Exclude:
+    - bin/**/*
+    - config/**/*
+    - db/**/*
+    - spec/dummy/**/*
+    - vendor/**/*
+  RunRailsCops: true
+
+Documentation:
+  Exclude:
+    - spec/**/*
+
+MethodLength:
+  Max: 15
+
+StringLiterals:
+  EnforcedStyle: double_quotes

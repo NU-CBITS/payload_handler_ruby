@@ -1,0 +1,6 @@
+.bundle/
+log/*.log
+pkg/
+.idea
+Gemfile.lock
+/coverage
