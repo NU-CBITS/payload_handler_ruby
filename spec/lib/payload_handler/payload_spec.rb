@@ -3,6 +3,23 @@ require_relative "../../../lib/payload_handler.rb"
 
 module PayloadHandler
   RSpec.describe Payload do
+    def my_resource
+      @my_resource ||= double("resource", serialize: { x: 1 })
+    end
+
+    def my_class
+      double("resource class", new: my_resource, where: [my_resource])
+    end
+
+    describe ".fetch" do
+      it "returns serialized resource classes" do
+        resources = { "myType" => my_class }
+        payload = Payload.fetch(resources: resources)
+
+        expect(payload.entities.length).to eq 1
+      end
+    end
+
     describe "#save_entities" do
       context "when the type is unrecognized" do
         it "registers an error" do
@@ -18,14 +35,6 @@ module PayloadHandler
       end
 
       context "when a type is recognized" do
-        def my_resource
-          @my_resource ||= double("resource", serialize: { x: 1 })
-        end
-
-        def my_class
-          double("resource class", new: my_resource)
-        end
-
         before do
           params = [{ type: "myType", foo: "bar" }]
           @payload = Payload.new(extra_params: { participant_id: 1 },

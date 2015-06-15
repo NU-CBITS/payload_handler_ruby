@@ -5,6 +5,11 @@ module PayloadHandler
   class Payload
     attr_reader :entities, :errors
 
+    def self.fetch(resources:, query_params: {})
+      new(entities_params: [], resources: resources, extra_params: query_params)
+        .load
+    end
+
     # entities_params: an array of hashes representing entities
     # resources: a hash mapping types to classes
     # extra_params: a hash of parameters to be added to every entity
@@ -32,6 +37,15 @@ module PayloadHandler
           @errors << resource.errors.full_messages.join(", ")
         end
       end
+    end
+
+    # Fetch entities from the database.
+    def load
+      @entities = @resources.map do |_resource_type, resource_class|
+        resource_class.where(@extra_params).map(&:serialize)
+      end.flatten
+
+      self
     end
 
     private
